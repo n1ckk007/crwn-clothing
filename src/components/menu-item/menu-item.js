@@ -1,8 +1,12 @@
 import React from "react";
 import "./menu-item.scss";
+import { withRouter } from "react-router-dom";
 
-const MenuItem = ({ title, imageUrl, size }) => (
-  <div className={`${size} menu-item`}>
+const MenuItem = ({ title, imageUrl, size, history, linkUrl, match }) => (
+  <div
+    className={`${size} menu-item`}
+    onClick={() => history.push(`${match.url}${linkUrl}`)}
+  >
     {/* we dont want the image when it scales to be bigger, we want the effect to get bigger within the div */}
     <div
       className="background-image"
@@ -15,4 +19,5 @@ const MenuItem = ({ title, imageUrl, size }) => (
   </div>
 );
 
-export default MenuItem;
+//withRouter allows us to have access to location, match and history props in routerDom
+export default withRouter(MenuItem);

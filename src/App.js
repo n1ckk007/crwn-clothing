@@ -35,7 +35,7 @@ class App extends Component {
                 ...snapShot.data(),
               },
             });
-            console.log(this.state);
+            // console.log(this.state);
           });
         } else {
           //equivalent to saying current user is to null

@@ -13,6 +13,35 @@ const config = {
   measurementId: "G-KQ4S8LM34T",
 };
 
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+  // if there is no userAuth, we want to exit from this function
+  if (!userAuth) return;
+  //if it does exist we query inside of firestore for the document to see if it already exists
+  // console.log(firestore.doc("users/1288sdjsadad"));
+  const userRef = firestore.doc(`users/${userAuth.uid}`);
+  const snapShot = await userRef.get();
+  //console.log(snapShot);
+  // if this snapShot doesn't exist, we'll create data in that place
+  if (!snapShot.exists) {
+    // we want displayName and email from userAuth
+    const { displayName, email } = userAuth;
+    //know when we made that document
+    const createdAt = new Date();
+    try {
+      // .set being the create method, pass in obj where we have displayName, email etc
+      await userRef.set({
+        displayName,
+        email,
+        createdAt,
+        ...additionalData,
+      });
+    } catch (error) {
+      console.log("error creating user", error.message);
+    }
+  }
+  return userRef;
+};
+
 firebase.initializeApp(config);
 
 // export this out anywhere where we need to use anything related to authentication

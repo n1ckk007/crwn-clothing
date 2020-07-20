@@ -2,44 +2,38 @@ import React, { Component } from "react";
 import "./App.css";
 import HomePage from "./pages/homepage/homepage";
 import { Switch, Route } from "react-router-dom";
+import { connect } from "react-redux";
 import ShopPage from "./pages/shop/ShopPage";
 import Header from "./components/header/Header";
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up";
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
+import { setCurrentUser } from "./redux/user/userActions";
 
 class App extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      currentUser: null,
-    };
-  }
-
   //close subscription when it unmounts
   unsubscribeFromAuth = null;
 
   componentDidMount() {
+    const { setCurrentUser } = this.props;
+
     // method on the auth library from firebase. takes a function where the param is what the user state is of the auth
     this.unsubscribeFromAuth = //this is an open subscription as long as component is mounted on our DOM, whenever any changes occur on firebase eg sign in/out,
       // firebase sends msg saying auth state has changed
       auth.onAuthStateChanged(async (userAuth) => {
-        // this.setState({ currentUser: user });
         if (userAuth) {
           const userRef = await createUserProfileDocument(userAuth);
           userRef.onSnapshot((snapShot) => {
-            this.setState({
+            setCurrentUser({
               currentUser: {
                 // creating new obj that has both all properties of snapshot that we want as well as the id
                 id: snapShot.id,
                 ...snapShot.data(),
               },
             });
-            // console.log(this.state);
           });
         } else {
           //equivalent to saying current user is to null
-          this.setState({ currentUser: userAuth });
+          setCurrentUser(userAuth);
         }
         // console.log(user);
       });
@@ -52,7 +46,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Header currentUser={this.state.currentUser} />
+        <Header />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
@@ -63,4 +57,8 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapDispatchToProps = (dispatch) => ({
+  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+});
+
+export default connect(null, mapDispatchToProps)(App);

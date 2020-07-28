@@ -20,3 +20,20 @@ export const addItomToCart = (cartItems, cartItemToAdd) => {
   // if cart item is not found in our array, return new array with all our existing cart items but also add object with base quantity of 1
   return [...cartItems, { ...cartItemToAdd, quantity: 1 }];
 };
+
+export const removeItemFromCart = (cartItems, cartItemToRemove) => {
+  const existingCartItem = cartItems.find(
+    // check if the cartitemid = toremove id, if we have existing cart item then check if quantity = 1 then we want to filter it out
+    (cartItem) => cartItem.id === cartItemToRemove.id
+  );
+  // if existing items quantity is at 1 then remove it
+  if (existingCartItem.quantity === 1) {
+    return cartItems.filter((cartItem) => cartItem.id !== cartItemToRemove.id);
+  }
+  // otherwise decrese the quantity and keep everyother cart item the same
+  return cartItems.map((cartItem) =>
+    cartItem.id === cartItemToRemove.id
+      ? { ...cartItem, quantity: cartItem.quantity - 1 }
+      : cartItem
+  );
+};

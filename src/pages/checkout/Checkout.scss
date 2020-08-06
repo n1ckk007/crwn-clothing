@@ -27,5 +27,17 @@
     margin-top: 30px;
     margin-left: auto;
     font-size: 36px;
+
+    button {
+      float: right;
+    }
+  }
+
+  .test-warning {
+    width: 100%;
+    text-align: center;
+    color: red;
+
+    font-size: 24px;
   }
 }

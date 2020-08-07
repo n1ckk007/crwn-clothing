@@ -12,6 +12,7 @@ import { setCurrentUser } from "./redux/user/userActions";
 import { createStructuredSelector } from "reselect";
 import { selectCurrentUser } from "./redux/user/userSelector";
 import CheckoutPage from "./pages/checkout/Checkout";
+import ContactPage from "./pages/contact/ContactPage";
 
 class App extends Component {
   //close subscription when it unmounts
@@ -67,6 +68,7 @@ class App extends Component {
               )
             }
           />
+          <Route exact path="/contact" component={ContactPage} />
         </Switch>
       </div>
     );

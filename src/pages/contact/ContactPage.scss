@@ -1,11 +1,19 @@
 .contact {
   display: flex;
+
+  .bh-container {
+    width: 200px;
+  }
+
+  .text {
+    margin-top: 20px;
+  }
 }
 
-.bh-container {
-  width: 200px;
-}
-
-.text {
-  margin-top: 20px;
+@media screen and (max-width: 800px) {
+  .title-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 }

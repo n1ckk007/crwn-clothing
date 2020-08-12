@@ -57,7 +57,10 @@ export default class SignIn extends Component {
             required
           />
           <div className="buttons">
-            <CustomButton type="submit"> Sign in </CustomButton>
+            <CustomButton type="submit" className="sign-in-btn">
+              {" "}
+              Sign in{" "}
+            </CustomButton>
             <CustomButton onClick={signInWithGoogle} isGoogleSignIn>
               Sign in with Google
             </CustomButton>

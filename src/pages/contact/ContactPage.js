@@ -5,7 +5,9 @@ import "./ContactPage.scss";
 export default function ContactPage() {
   return (
     <div>
-      <h1>Contact Us</h1>
+      <div className="title-container">
+        <h1>Contact Us</h1>
+      </div>
       <div className="contact">
         <div className="bh-container">
           <Bighead />

@@ -13,6 +13,8 @@ const config = {
   measurementId: "G-KQ4S8LM34T",
 };
 
+firebase.initializeApp(config);
+
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   // if there is no userAuth, we want to exit from this function
   if (!userAuth) return;
@@ -42,7 +44,47 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   return userRef;
 };
 
-firebase.initializeApp(config);
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  //create the collection using the collectionKey
+  const collectionRef = firestore.collection(collectionKey);
+  //firebase will give back ref obj no matter what
+  //console.log(collectionRef);
+  const batch = firestore.batch();
+  //loop over objtoadd array using for each method
+  objectsToAdd.forEach((obj) => {
+    // will get new doc ref in this collection and randomly generate an id
+    const newDocRef = collectionRef.doc();
+    // console.log(newDocRef);
+    batch.set(newDocRef, obj);
+  });
+  return await batch.commit();
+};
+
+// cos we want to convert to an object as we're getting back an array
+export const convertCollectionsSnapshotToMap = (collections) => {
+  // .docs is going to give us our query snapshot array that we had in log
+  const transformedCollection = collections.docs.map((doc) => {
+    // in each one get doc obj
+    // pull off the title and items from the doc data (in order to get data off snapshot we need to call data())
+    const { title, items } = doc.data();
+    return {
+      // encodeURI pass string and it will convert it into version that url can read
+      // title eg hats jackets is same string we want for our route name
+      routeName: encodeURI(title.toLowerCase()),
+      id: doc.id,
+      title,
+      items,
+    };
+  });
+  // console.log(transformedCollection);
+  return transformedCollection.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
+};
 
 // export this out anywhere where we need to use anything related to authentication
 export const auth = firebase.auth();

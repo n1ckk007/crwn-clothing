@@ -8,9 +8,17 @@ import {
   convertCollectionsSnapshotToMap,
 } from "../../firebase/firebase.utils";
 import { updateCollections } from "../../redux/shop/shopActions";
+import WithSpinner from "../../components/with-spinner/WithSpinner";
+
+const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview);
+const CollectionPageWithSpinner = WithSpinner(CollectionPage);
 
 // we get match, location and history as props from Route
 class ShopPage extends Component {
+  state = {
+    loading: true,
+  };
+
   unsubscribeFromSnapshot = null;
 
   componentDidMount() {
@@ -23,18 +31,29 @@ class ShopPage extends Component {
       const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
       // console.log(collectionsMap);
       updateCollections(collectionsMap);
+      // after update collections is called loading is false
+      this.setState({ loading: false });
     });
   }
 
   render() {
     const { match } = this.props;
+    const { loading } = this.state;
     return (
       <div className="shop-page">
-        <Route exact path={`${match.path}`} component={CollectionsOverview} />
+        <Route
+          exact
+          path={`${match.path}`}
+          render={(props) => (
+            <CollectionsOverviewWithSpinner isLoading={loading} {...props} />
+          )}
+        />
         {/* collection to dynamically pluck off right category from our reducer to know which one to display */}
         <Route
           path={`${match.path}/:collectionId`}
-          component={CollectionPage}
+          render={(props) => (
+            <CollectionPageWithSpinner isLoading={loading} {...props} />
+          )}
         />
       </div>
     );

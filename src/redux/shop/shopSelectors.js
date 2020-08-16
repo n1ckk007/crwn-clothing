@@ -11,7 +11,9 @@ export const selectCollections = createSelector(
 export const selectCollectionsForPreview = createSelector(
   [selectCollections],
   // gets us all of the keys of an object that we pass into and gives it to us in an array format
-  (collections) => Object.keys(collections).map((key) => collections[key])
+  // if collections exists then call objectkeys if not return empty version of our collections
+  (collections) =>
+    collections ? Object.keys(collections).map((key) => collections[key]) : []
   // we want to get all the keys, and then map over that array of keys so we get the value of our collections obj at that key
 );
 
@@ -19,7 +21,7 @@ export const selectCollection = memoize((collectionUrlParam) =>
   createSelector(
     [selectCollections],
     // find collection.id matching the url parameter of our collection id map
-    (collections) => collections[collectionUrlParam]
+    (collections) => (collections ? collections[collectionUrlParam] : null)
   )
 );
 

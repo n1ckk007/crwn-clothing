@@ -30,3 +30,14 @@ export const selectCollection = memoize((collectionUrlParam) =>
 // (in this case we return a selector). If this function gets called again with the same
 // collectionUrlParam, don't rerun this function because we'll return the same value as
 // last time, which we've memoized so just return the selector that's been stored.
+
+export const selectIsCollectionFetching = createSelector(
+  [selectShop],
+  (shop) => shop.isFetching
+);
+
+export const selectIsCollectionsLoaded = createSelector(
+  // if our collections is loaded we'll get true, otherwise we'll get false
+  [selectShop],
+  (shop) => !!shop.collections
+);

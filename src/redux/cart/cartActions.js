@@ -18,3 +18,8 @@ export const clearItemFromCart = (item) => ({
   type: CartActionTypes.CLEAR_ITEM_FROM_CART,
   payload: item,
 });
+
+export const clearCart = () => ({
+  // dispatch clearCart from our saga when we hear that useraction signoutsuccess
+  type: CartActionTypes.CLEAR_CART,
+});

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import FormInput from "../form-input/FormInput";
 import CustomButton from "../custom-button/CustomButton";
-import { auth, createUserProfileDocument } from "../../firebase/firebase.utils";
 import "./SignUp.scss";
+import { signUpStart } from "../../redux/user/userActions";
+import { connect } from "react-redux";
 
 class SignUp extends Component {
   constructor(props) {
@@ -18,27 +19,31 @@ class SignUp extends Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
+
+    // destructure off our props from dispatch
+    const { signUpStart } = this.props;
     const { displayName, email, password, confirmPassword } = this.state;
     if (password !== confirmPassword) {
       alert("Password don't match");
       return;
     }
-    try {
-      const { user } = await auth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
-      await createUserProfileDocument(user, { displayName });
-      this.setState({
-        //   this will clear the form after user is created
-        displayName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    // fire signupstart with obj that has dp email and pw
+    signUpStart({ displayName, email, password });
+    // try { ***moved to userSagas***
+    //   const { user } = await auth.createUserWithEmailAndPassword(
+    //     email,
+    //     password
+    //   );
+    //   // in order for us to create it in our backend we need to run createUserprofDoc using our new auth obj that we get back aswell as display name
+    //   await createUserProfileDocument(user, { displayName });
+
+    // this.setState({ ***dont need the setstate anymore cos it signs the user in after we sign them up***
+    //   //   this will clear the form after user is created
+    //   displayName: "",
+    //   email: "",
+    //   password: "",
+    //   confirmPassword: "",
+    // });
   };
 
   handleChange = (event) => {
@@ -92,4 +97,9 @@ class SignUp extends Component {
   }
 }
 
-export default SignUp;
+const mapDispatchToProps = (dispatch) => ({
+  // pass in email, pw and credentials so just pass in as obj called userCredentials
+  signUpStart: (userCredentials) => dispatch(signUpStart(userCredentials)),
+});
+
+export default connect(null, mapDispatchToProps)(SignUp);

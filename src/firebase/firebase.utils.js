@@ -86,15 +86,26 @@ export const convertCollectionsSnapshotToMap = (collections) => {
   }, {});
 };
 
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    // the same unsub pattern that we had
+    const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+      unsubscribe();
+      // once we unsub we'll resolve with our userAuth obj and if it fails reject w whatever error we get back
+      resolve(userAuth);
+    }, reject);
+  });
+};
+
 // export this out anywhere where we need to use anything related to authentication
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
 // gives access to google auth provider class from authentication library
-const provider = new firebase.auth.GoogleAuthProvider();
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
 //takes custom parameters, always trigger the google pop up whenever we use this google auth provider for auth and sign in
-provider.setCustomParameters({ prompt: "select_account" });
+googleProvider.setCustomParameters({ prompt: "select_account" });
 // takes provider class that we made, we just want the google one
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
 export default firebase;

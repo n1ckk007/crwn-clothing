@@ -1,17 +1,25 @@
-import React, { useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { GlobalStyle } from "./globalStyles";
-import HomePage from "./pages/homepage/homepage";
+// import HomePage from "./pages/homepage/homepage";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import ShopPage from "./pages/shop/ShopPage";
+
 import Header from "./components/header/Header";
-import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up";
 
 import { createStructuredSelector } from "reselect";
 import { selectCurrentUser } from "./redux/user/userSelector";
-import CheckoutPage from "./pages/checkout/Checkout";
-import ContactPage from "./pages/contact/ContactPage";
 import { checkUserSession } from "./redux/user/userActions";
+import Spinner from "./components/spinner/Spinner";
+
+// declare the const that we want to dynamically import and wrap it in lazy
+// component = lazy which is a func that gets passed a func that gets called import and then a string to the path that we want
+const HomePage = lazy(() => import("./pages/homepage/homepage"));
+const ShopPage = lazy(() => import("./pages/shop/ShopPage"));
+const SignInAndSignUpPage = lazy(() =>
+  import("./pages/sign-in-and-sign-up/sign-in-and-sign-up")
+);
+const CheckoutPage = lazy(() => import("./pages/checkout/Checkout"));
+const ContactPage = lazy(() => import("./pages/contact/ContactPage"));
 
 const App = ({ checkUserSession, currentUser }) => {
   //close subscription when it unmounts
@@ -36,18 +44,21 @@ const App = ({ checkUserSession, currentUser }) => {
       <GlobalStyle />
       <Header />
       <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route path="/shop" component={ShopPage} />
-        <Route exact path="/checkout" component={CheckoutPage} />
-        <Route
-          exact
-          path="/signin"
-          // if theres a current user signed in it redirects to home page
-          render={() =>
-            currentUser ? <Redirect to="/" /> : <SignInAndSignUpPage />
-          }
-        />
-        <Route exact path="/contact" component={ContactPage} />
+        <Suspense fallback={<Spinner />}>
+          <Route exact path="/" component={HomePage} />
+
+          <Route path="/shop" component={ShopPage} />
+          <Route exact path="/checkout" component={CheckoutPage} />
+          <Route
+            exact
+            path="/signin"
+            // if theres a current user signed in it redirects to home page
+            render={() =>
+              currentUser ? <Redirect to="/" /> : <SignInAndSignUpPage />
+            }
+          />
+          <Route exact path="/contact" component={ContactPage} />
+        </Suspense>
       </Switch>
     </div>
   );

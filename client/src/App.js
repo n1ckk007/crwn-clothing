@@ -10,6 +10,7 @@ import { createStructuredSelector } from "reselect";
 import { selectCurrentUser } from "./redux/user/userSelector";
 import { checkUserSession } from "./redux/user/userActions";
 import Spinner from "./components/spinner/Spinner";
+import ErrorBoundary from "./components/error-boundary/error-boundary";
 
 // declare the const that we want to dynamically import and wrap it in lazy
 // component = lazy which is a func that gets passed a func that gets called import and then a string to the path that we want
@@ -44,21 +45,22 @@ const App = ({ checkUserSession, currentUser }) => {
       <GlobalStyle />
       <Header />
       <Switch>
-        <Suspense fallback={<Spinner />}>
-          <Route exact path="/" component={HomePage} />
-
-          <Route path="/shop" component={ShopPage} />
-          <Route exact path="/checkout" component={CheckoutPage} />
-          <Route
-            exact
-            path="/signin"
-            // if theres a current user signed in it redirects to home page
-            render={() =>
-              currentUser ? <Redirect to="/" /> : <SignInAndSignUpPage />
-            }
-          />
-          <Route exact path="/contact" component={ContactPage} />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<Spinner />}>
+            <Route exact path="/" component={HomePage} />
+            <Route path="/shop" component={ShopPage} />
+            <Route exact path="/checkout" component={CheckoutPage} />
+            <Route
+              exact
+              path="/signin"
+              // if theres a current user signed in it redirects to home page
+              render={() =>
+                currentUser ? <Redirect to="/" /> : <SignInAndSignUpPage />
+              }
+            />
+            <Route exact path="/contact" component={ContactPage} />
+          </Suspense>
+        </ErrorBoundary>
       </Switch>
     </div>
   );

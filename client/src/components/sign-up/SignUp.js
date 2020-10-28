@@ -27,7 +27,8 @@ const SignUp = ({ signUpStart }) => {
     }
     // fire signupstart with obj that has dp email and pw
     signUpStart({ displayName, email, password });
-    // try { ***moved to userSagas***
+    // ***moved to userSagas***
+    // try {
     //   const { user } = await auth.createUserWithEmailAndPassword(
     //     email,
     //     password

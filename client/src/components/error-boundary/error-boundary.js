@@ -39,7 +39,6 @@ class ErrorBoundary extends React.Component {
         </ErrorImageOverlay>
       );
     }
-
     return this.props.children;
   }
 }

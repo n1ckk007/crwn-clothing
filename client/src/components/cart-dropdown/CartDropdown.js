@@ -38,5 +38,5 @@ const mapStateToProps = createStructuredSelector({
   cartItems: selectCartItems,
 });
 
-// if we dont supploy mdtp as 2nd param to connect, connect will pass the dispatch into our component as a prop
+// if we dont supply mdtp as 2nd param to connect, connect will pass the dispatch into our component as a prop
 export default withRouter(connect(mapStateToProps)(CartDropdown));
